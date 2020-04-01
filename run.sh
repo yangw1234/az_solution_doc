@@ -1,16 +1,20 @@
-# export ANALYTICS_ZOO_HOME=...
 # export OMP_NUM_THREADS=1 default to multiple model with single thread
-# export DATAPATH=...
+export ANALYTICS_ZOO_HOME=/path/to/analytics-zoo
+DATA_PATH=hdfs://path/to/imagenet
+EXECUTOR_CORES=24
+TOTAL_EXECUTOR_CORES=192
+SPARK_MASTER=spark://host:port
 
-sh ${ANALYTICS_ZOO_HOME}/bin/spark-submit-python-with-zoo.sh \
- --master spark://AEP-008:7077 \
- --executor-cores 24 \
- --total-executor-cores 192 \
+
+bash ${ANALYTICS_ZOO_HOME}/bin/spark-submit-python-with-zoo.sh \
+ --master $SPARK_MASTER \
+ --executor-cores $EXECUTOR_CORES \
+ --total-executor-cores $TOTAL_EXECUTOR_CORES \
  --executor-memory 175G \
  --driver-memory 20G \
  --conf spark.network.timeout=10000000 \
  inception.py \
  --batchSize 1536 \
  --learningRate 0.0896 \
- -f $DATAPATH \
+ -f $DATA_PATH \
  --maxIteration 62000
