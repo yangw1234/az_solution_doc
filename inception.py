@@ -141,7 +141,7 @@ if __name__ == "__main__":
         test_trigger = SeveralIteration(options.checkpointIteration)
         end_trigger = MaxIteration(options.maxIteration)
 
-    optimizer = TFOptimizer.from_loss(loss, optim, val_outputs=[logits], val_labels=[zero_based_label], val_method=[Accuracy(), Loss()], tensor_with_value={is_training: [True, False]}, model_dir="/tmp/logs/")
+    optimizer = TFOptimizer.from_loss(loss, optim, val_outputs=[logits], val_labels=[zero_based_label], val_method=[Accuracy(), Top5Accuracy(), Loss()], tensor_with_value={is_training: [True, False]}, model_dir="/tmp/logs/")
 
     optimizer.optimize(end_trigger=end_trigger, checkpoint_trigger=SeveralIteration(620))
 
