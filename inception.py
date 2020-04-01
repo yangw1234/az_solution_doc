@@ -1,5 +1,6 @@
 from math import ceil
 from optparse import OptionParser
+import os
 
 import tensorflow as tf
 from bigdl.optim.optimizer import *
@@ -13,16 +14,6 @@ from zoo.tfpark import TFDataset, TFOptimizer
 from nets import inception_v1
 
 slim = tf.contrib.slim
-
-
-def t(input_t):
-    if type(input_t) is list:
-        # insert into index 0 spot, such that the real data starts from index 1
-        temp = [0]
-        temp.extend(input_t)
-        return dict(enumerate(temp))
-    # if dictionary, return it back
-    return input_t
 
 
 def get_inception_data(url, sc=None, data_type="train"):
@@ -103,6 +94,7 @@ if __name__ == "__main__":
 
     images, labels = dataset.tensors
 
+    # As sequence file's label is one-based, so labels need to subtract 1.
     zero_based_label = labels - 1
 
     is_training = tf.placeholder(dtype=tf.bool, shape=())
@@ -112,7 +104,7 @@ if __name__ == "__main__":
                                                        dropout_keep_prob=0.6,
                                                        num_classes=1000,
                                                        is_training=is_training)
-    # As sequence file's label is one-based, so labels need to subtract 1.
+
     loss = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(logits=logits, labels=zero_based_label))
 
     iterationPerEpoch = int(ceil(float(1281167) / options.batchSize))
